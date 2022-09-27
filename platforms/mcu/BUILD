@@ -28,36 +28,6 @@ config_setting(
     constraint_values = [":stm32l552ze"],
 )
 
-constraint_value(
-  name = "stm32u585oi",
-  constraint_setting = "@platforms//os",
-)
-
-config_setting(
-    name = "stm32u585xx",
-    constraint_values = [":stm32u585oi"],
-)
-
-constraint_value(
-  name = "stm32l041e6",
-  constraint_setting = "@platforms//os",
-)
-
-config_setting(
-    name = "stm32l041xx",
-    constraint_values = [":stm32l041e6"],
-)
-
-constraint_value(
-  name = "nRF52840_xxAA",
-  constraint_setting = "@platforms//os",
-)
-
-config_setting(
-    name = "nRF52840_xx",
-    constraint_values = [":nRF52840_xxAA"],
-)
-
 config_setting(
     name = "simulation",
     constraint_values = [
@@ -78,8 +48,6 @@ cc_library(
     deps = select({
         ":stm32f407VG" : [ "//third_party/stm32f4:startup","//third_party/stm32f4:linker"],
         ":stm32l552ze": ["//third_party/stm32l5:startup", "//third_party/stm32l5:linker"],
-        ":stm32u585oi" : [ "//third_party/stm32U5:startup","//third_party/stm32U5:linker"],
-        ":stm32l041e6": ["//third_party/stm32l0:startup", "//third_party/stm32l0:linker"],
     }),
     visibility = ["//visibility:public"],
 )
