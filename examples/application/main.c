@@ -1,10 +1,6 @@
 #include <stdio.h>
 #include "examples/algorithm/function.h"
 
-/// \file
-/// \author Jeff Barbieri
-/// \date Jun 30 2019
-
 /// Application overview.
 int main()
 {
