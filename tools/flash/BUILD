@@ -13,3 +13,4 @@ flash_execution_wrapper(
     device_type = "stm32f407xx",
     file_path = "C:/Users/patilu3/Bazel_Projects/bazel-build-sample/bazel-bin/examples/application/app.hex",
 )
+
