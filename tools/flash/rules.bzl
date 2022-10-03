@@ -1,54 +1,36 @@
-# def _impl(ctx):
-#     ctx.actions.run(
-#         executable = ctx.executable._flash,
-#         arguments = [ctx.outputs.text.path],
-#         outputs = [ctx.outputs.text],
-#     )
+def _impl(ctx):
 
-# flash_tool = rule(
-#     implementation = _impl,
-#     attrs = {
-#         "_flash": attr.label(executable=True, allow_files=True, cfg = "exec", default=Label("//tools/flash:flash"))
-#     },
-#     outputs = {
-#         "text": "%{name}.txt",
-#     },
-#     executable =True
-# )
+    microncontroller_type = ctx.attr.device_type
+    hex_file_path = ctx.attr.file_path
+    
+    script_template = """
+set -eo pipefail
+$RUNFILES_DIR/deploy {microncontroller_type} {hex_file_path}
+"""
 
-# load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
-# def flash_tool(name, **kwargs):
-#     copy_file(
-#         name = "%s.py.create" % name,
-#         src = "//tools/flash:main.py",
-#         out = "%s.py" % name, # Appease local main search
-#     ) # Why is no copy_file action provided by Skylark???
+    script = ctx.actions.declare_file("%s.sh" % ctx.label.name)
 
-#     native.py_binary(
-#         name = name,
-#         srcs = [
-#             "%s.py" % name,
-#         ],
-#         deps = [
-#             "//tools/flash:flash",
-#         ],
-#         **kwargs
-#     )
-
-def _stuff_rule_impl(ctx):
-    ctx.actions.run(
-        inputs = [],
-        outputs = [ctx.outputs.outfile],
-        executable = ctx.executable._tool,
-        arguments = [ctx.outputs.out.path],
+    script_content = script_template.format(
+        microncontroller_type = microncontroller_type,
+        hex_file_path = hex_file_path,
     )
 
-flash_tool = rule(
-    implementation = _stuff_rule_impl,
+    ctx.actions.write(script, script_content, is_executable = True)
+    runfiles = ctx.runfiles(
+        files = [ctx.files._deploy[0]],
+        root_symlinks = {"deploy": ctx.files._deploy[0]},
+    )
+    return [DefaultInfo(executable = script, runfiles = runfiles)]
+
+flash_execution_wrapper = rule(
+    implementation = _impl,
     attrs = {
-        # cfg param is required, but doesn't matter whether it's "host" or "target"
-        "_tool": attr.label(executable=True, default="//tools/flash:flash", cfg="exec"),
-        "outfile": attr.output(),
+        "_deploy": attr.label(
+            cfg = "host",
+            # allow_single_file = True,
+            default=Label("//tools/flash:deploy")),
+        "device_type":attr.string(mandatory = True),
+        "file_path":attr.string(mandatory = True),
     },
-    executable = True
+    executable =True
 )
