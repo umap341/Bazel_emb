@@ -1,12 +1,12 @@
-py_binary(
-  name = "deploy",
-  # srcs = glob(["*.py"]),
-  # main = "main.py", 
-  srcs = ["deploy.py"],
-#   args = ["$(location //examples/application:application)",]
-#   data = ["//examples/application"],
-  visibility = ["//visibility:public"],
-)
+# py_binary(
+#   name = "deploy",
+#   # srcs = glob(["*.py"]),
+#   # main = "main.py", 
+#   srcs = ["deploy.py"],
+# #   args = ["$(location //examples/application:application)",]
+# #   data = ["//examples/application"],
+#   visibility = ["//visibility:public"],
+# )
 
 # flash_execution_wrapper(
 #     name = "test_wrapper",
