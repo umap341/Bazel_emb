@@ -38,12 +38,11 @@ def _impl(ctx):
   strip_path = tool_path + "/arm/bin/ielftool.exe"
 
   # Define the path to the includes provided by the toolchain.
-  cxx_builtin_include_directories = [
-    # tool_path + "/usr/lib/gcc",
-    # "/usr/include",
-    tool_path + "lib",
-    tool_path + "arm-none-eabi/include",
-  ]
+  # cxx_builtin_include_directories = [
+  #   # tool_path + "/usr/lib/gcc",
+  #   # "/usr/include",
+  #   tool_path + "lib",
+  # ]
 
   # Define the target architecture.
   compile_target_flags = [
@@ -64,6 +63,30 @@ def _impl(ctx):
           flag_group(
             flags = ["%{source_file}"],
           ),
+
+          # The source file is compiled to an object file.
+          flag_group(
+            # flags = ["%{source_file}"],
+            flags=["-o", "%{output_file}",]
+          ),
+
+          flag_group(
+            flags=[
+                   "--no_cse", 
+                   "--no_unroll",
+                   "--no_inline",
+                   "--no_code_motion",
+                   "--no_tbaa",
+                   "--no_clustering",
+                   "--no_scheduling",
+                   #"--aeabi",
+                   "--no_unaligned_access"]
+          ),
+
+          flag_group(
+            flags = ["--debug",
+                     "--endian=little"],
+          ),
           
           # Tune performance to the target architecture.
           flag_group(
@@ -72,12 +95,11 @@ def _impl(ctx):
           # The default flags configure language and static analysis features that
           # are common to the whole code base.
           flag_group(
-            flags = ["--silent",
-                     "--thumb",
-                     "--warnings_are_errors",
-                     "--c++",
-                     "-e",
-                     "--char_is_unsigned",
+            flags = [
+                    "-e",
+                    "--warnings_are_errors",
+                     "--fpu=VFPv4_sp",
+                     "--silent",
                      ]
           ),
           # The user flags are defined by each library in the build rule. They
@@ -101,10 +123,10 @@ def _impl(ctx):
             ],
           ),
           
-          flag_group(
-            flags = ["-D%{preprocessor_defines}"],
-            iterate_over = "preprocessor_defines",
-          ),
+          # flag_group(
+          #   flags = ["-D%{preprocessor_defines}"],
+          #   iterate_over = "preprocessor_defines",
+          # ),
 
           # The build system organizes the include paths into groups. All of the
           # groups are included for simplicity. However, experiments have shown
@@ -121,13 +143,9 @@ def _impl(ctx):
             iterate_over = "system_include_paths",
             flags = ["-I", "%{system_include_paths}"],
           ),
-        # The source file is compiled to an object file.
+
           flag_group(
-            # flags = ["%{source_file}"],
-            flags=["-o", "%{output_file}",]
-          ),
-          flag_group(
-            flags = ["--debug"],
+            flags = ["-Ol",]
           ),
 
           # The source file is compiled to an object file.
@@ -144,7 +162,7 @@ def _impl(ctx):
         flag_groups = [
           flag_group(
             flags = [
-              "-oh",
+              "-ol",
               "--no_fragments",
               "--NDEBUG",
             ],
@@ -167,6 +185,11 @@ def _impl(ctx):
             flags = 
               assembler_tar_flag,
           ),
+          # flag_group(
+          #   flags = [
+          #     "--aeabi",
+          #   ],
+          # ),
           flag_group(
             flags = ["%{source_file}"],
           ),
@@ -213,23 +236,31 @@ def _impl(ctx):
       # Flags defined for all compilation modes.
       flag_set(
         flag_groups = [
-          # Tune performance to the target architecture.
+
+           # Each object file is added to the executable.
           flag_group(
-            flags = compile_target_flags,
+            iterate_over = "libraries_to_link",
+            flags = ["%{libraries_to_link.name}"],
           ),
+
           # The default flags configure optimization and static analysis
           # features that are common to the whole code base.
           flag_group(
             flags = [
-              "--silent",
-              "--warnings_are_errors",
-              "--semihosting",
-              "--vfe",
-              "--entry","__iar_program_start",
-              "--text_out","locale",  
-              "--fpu=VFPv4_sp"         
+              "--no_out_extension",
+              "--strip", 
+              # "--aeabi",        
             ],
           ),
+
+           # The executable is output the given file.
+          flag_group(
+            flags = [
+              "-o", "%{output_execpath}",
+              # "--map %{output_execpath}.map",
+            ],
+          ),
+
           # The user flags are defined by each executable in the build file.
           # They are used configure features that only apply to one executable.
           # For example, to enable an optimization that may not be safe for all
@@ -239,16 +270,22 @@ def _impl(ctx):
             expand_if_available = "user_link_flags",
             flags = ["%{user_link_flags}"],
           ),
-          # Each object file is added to the executable.
+
+          # Tune performance to the target architecture.
           flag_group(
-            iterate_over = "libraries_to_link",
-            flags = ["%{libraries_to_link.name}"],
+            flags = compile_target_flags,
           ),
-          # The executable is output the given file.
-          flag_group(
+         
+           flag_group(
             flags = [
-              "-o", "%{output_execpath}",
-              # "--map %{output_execpath}.map",
+              "--no_out_extension",
+              "--silent",
+              "--warnings_are_errors",
+              "--semihosting",
+              "--vfe",
+              "--entry","__iar_program_start",
+              "--text_out","locale",  
+              "--fpu=VFPv4_sp"         
             ],
           ),
         ],
@@ -277,7 +314,7 @@ def _impl(ctx):
         flag_groups = [
           flag_group(
             flags = [
-              "--output-target", "ihex",
+              "--output-target", "-ihex",
               "%{input_file}",
               "%{output_file}"
             ],
@@ -345,7 +382,7 @@ def _impl(ctx):
     target_cpu = target_cpu,
     target_libc = target_libc,
     compiler = compiler,
-    cxx_builtin_include_directories = cxx_builtin_include_directories,
+    # cxx_builtin_include_directories = cxx_builtin_include_directories,
     abi_version = abi_version,
     abi_libc_version = abi_libc_version,
     action_configs = action_configs,
@@ -353,7 +390,7 @@ def _impl(ctx):
     artifact_name_patterns = artifact_name_patterns,
   )
 
-# Configures the GCC ARM C/C++ toolchain.
+# Configures the ARM C/C++ toolchain.
 # The rule defines the interface used in build files. The attributes used by the
 # implementation above.
 cc_toolchain_config = rule(
