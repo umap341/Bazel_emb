@@ -1,195 +1,114 @@
-# Package overview.
-# How are compilers intended to be used and extended?
+# Package overview
+# Intended to extend the Bazel platforms. A set of common constraint values that
+# that are a common language for the targets that use the build system.
 package(default_visibility = ["//visibility:public"])
 
-# Explain The GNU Compiler Collection and all its features. What platforms this
-# configuration supports. Linux? Windows with MSYS2?
-constraint_value(
-  name = "gcc",
-  constraint_setting = "@bazel_tools//tools/cpp:cc_compiler",
+# Platform overview.
+# When selected, what does it request from the Build system.
+platform(
+    name = "stm32f407VG_gcc",
+    constraint_values = [
+        "//platforms/cpu:cortex_m4f",
+        "//platforms/mcu:stm32f407VG",
+        "//platforms/compiler:gcc",
+    ],
 )
 
-constraint_value(
-  name = "iar",
-  constraint_setting = "@bazel_tools//tools/cpp:cc_compiler",
+platform(
+    name = "stm32f407VG_iar",
+    constraint_values = [
+        "//platforms/cpu:cortex_m4f",
+        "//platforms/mcu:stm32f407VG",
+        "//platforms/compiler:iar",
+    ],
 )
 
-constraint_value(
-  name = "keil",
-  constraint_setting = "@bazel_tools//tools/cpp:cc_compiler",
+platform(
+    name = "stm32f429zi_keil",
+    constraint_values = [
+        "//platforms/cpu:cortex_m4f",
+        "//platforms/mcu:stm32f429zi",
+        "//platforms/compiler:keil",
+    ],
 )
 
-# Package overview.
-# How are compilers intended to be used and extended?
-
-# Toolchains overview.
-toolchain(
-  name = "cortex_m4f_gcc_windows",
-  exec_compatible_with = [
-    "@platforms//cpu:x86_64",
-    "@platforms//os:windows",
-  ],
-  target_compatible_with = [
-    "//platforms/cpu:cortex_m4f",
-    "//platforms/compiler:gcc",
-  ],
-  toolchain = "//platforms/compiler/gcc/windows:cortex_m4f",
-  toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+platform(
+    name = "stm32l552ze_gcc",
+    constraint_values = [
+        "//platforms/cpu:cortex_m33f",
+        "//platforms/mcu:stm32l552ze",
+        "//platforms/compiler:gcc",
+    ],
 )
 
-toolchain(
-  name = "cortex_m4f_gcc_linux",
-  exec_compatible_with = [
-    "@platforms//cpu:x86_64",
-    "@platforms//os:linux",
-  ],
-  target_compatible_with = [
-    "//platforms/cpu:cortex_m4f",
-    "//platforms/compiler:gcc",
-  ],
-  toolchain = "//platforms/compiler/gcc/linux:cortex_m4f",
-  toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+platform(
+    name = "stm32l552ze_iar",
+    constraint_values = [
+        "//platforms/cpu:cortex_m33f",
+        "//platforms/mcu:stm32l552ze",
+        "//platforms/compiler:iar",
+    ],
 )
 
-toolchain(
-  name = "cortex_m4f_iar",
-  exec_compatible_with = [
-    "@platforms//cpu:x86_64",
-    "@platforms//os:windows",
-  ],
-  target_compatible_with = [
-    "//platforms/cpu:cortex_m4f",
-    "//platforms/compiler:iar",
-  ],
-  toolchain = "//platforms/compiler/iar:cortex_m4f",
-  toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+platform(
+    name = "stm32l552ze_keil",
+    constraint_values = [
+        "//platforms/cpu:cortex_m33f",
+        "//platforms/mcu:stm32l552ze",
+        "//platforms/compiler:keil",
+    ],
 )
 
-toolchain(
-  name = "cortex_m4f_keil",
-  exec_compatible_with = [
-    "@platforms//cpu:x86_64",
-    "@platforms//os:windows",
-  ],
-  target_compatible_with = [
-    "//platforms/cpu:cortex_m4f",
-    "//platforms/compiler:keil",
-  ],
-  toolchain = "//platforms/compiler/keil:cortex_m4f",
-  toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+platform(
+    name = "stm32u585oi_gcc",
+    constraint_values = [
+        "//platforms/cpu:cortex_m33f",
+        "//platforms/mcu:stm32u585oi",
+        "//platforms/compiler:gcc",
+    ]
 )
 
-toolchain(
-  name = "cortex_m33f_gcc_windows",
-  exec_compatible_with = [
-    "@platforms//cpu:x86_64",
-    "@platforms//os:windows",
-  ],
-  target_compatible_with = [
-    "//platforms/cpu:cortex_m33f",
-    "//platforms/compiler:gcc",
-  ],
-  toolchain = "//platforms/compiler/gcc/windows:cortex_m33f",
-  toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+platform(
+    name = "stm32u585oi_iar",
+    constraint_values = [
+        "//platforms/cpu:cortex_m33f",
+        "//platforms/mcu:stm32u585oi",
+        "//platforms/compiler:iar",
+    ],
 )
 
-toolchain(
-  name = "cortex_m33f_gcc_linux",
-  exec_compatible_with = [
-    "@platforms//cpu:x86_64",
-    "@platforms//os:linux",
-  ],
-  target_compatible_with = [
-    "//platforms/cpu:cortex_m33f",
-    "//platforms/compiler:gcc",
-  ],
-  toolchain = "//platforms/compiler/gcc/linux:cortex_m33f",
-  toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+platform(
+    name = "stm32l041e6_gcc",
+    constraint_values = [
+        "//platforms/cpu:cortex_m0+",
+        "//platforms/mcu:stm32l041e6",
+        "//platforms/compiler:gcc",
+    ],
 )
 
-toolchain(
-  name = "cortex_m33f_iar",
-  exec_compatible_with = [
-    "@platforms//cpu:x86_64",
-    "@platforms//os:windows",
-  ],
-  target_compatible_with = [
-    "//platforms/cpu:cortex_m33f",
-    "//platforms/compiler:iar",
-  ],
-  toolchain = "//platforms/compiler/iar:cortex_m33f",
-  toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+platform(
+    name = "stm32l041e6_iar",
+    constraint_values = [
+        "//platforms/cpu:cortex_m0+",
+        "//platforms/mcu:stm32l041e6",
+        "//platforms/compiler:iar",
+    ],
 )
 
-toolchain(
-  name = "cortex_m33f_keil",
-  exec_compatible_with = [
-    "@platforms//cpu:x86_64",
-    "@platforms//os:windows",
-  ],
-  target_compatible_with = [
-    "//platforms/cpu:cortex_m33f",
-    "//platforms/compiler:keil",
-  ],
-  toolchain = "//platforms/compiler/keil:cortex_m33f",
-  toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+platform(
+    name = "nRF52840_xxAA_gcc",
+    constraint_values = [
+        "//platforms/cpu:cortex_m4f",
+        "//platforms/mcu:nRF52840_xxAA",
+        "//platforms/compiler:gcc",
+    ],
 )
 
-# Cortex_m0+
-toolchain(
-  name = "cortex_m0+_gcc_windows",
-  exec_compatible_with = [
-    "@platforms//cpu:x86_64",
-    "@platforms//os:windows",
-  ],
-  target_compatible_with = [
-    "//platforms/cpu:cortex_m0+",
-    "//platforms/compiler:gcc",
-  ],
-  toolchain = "//platforms/compiler/gcc/windows:cortex_m0+",
-  toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+platform(
+    name = "nRF52840_xxAA_iar",
+    constraint_values = [
+        "//platforms/cpu:cortex_m4f",
+        "//platforms/mcu:nRF52840_xxAA",
+        "//platforms/compiler:iar",
+    ],
 )
-
-toolchain(
-  name = "cortex_m0+_gcc_linux",
-  exec_compatible_with = [
-    "@platforms//cpu:x86_64",
-    "@platforms//os:linux",
-  ],
-  target_compatible_with = [
-    "//platforms/cpu:cortex_m0+",
-    "//platforms/compiler:gcc",
-  ],
-  toolchain = "//platforms/compiler/gcc/linux:cortex_m0+",
-  toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
-)
-
-toolchain(
-  name = "cortex_m0+_iar",
-  exec_compatible_with = [
-    "@platforms//cpu:x86_64",
-    "@platforms//os:windows",
-  ],
-  target_compatible_with = [
-    "//platforms/cpu:cortex_m0+",
-    "//platforms/compiler:iar",
-  ],
-  toolchain = "//platforms/compiler/iar:cortex_m0+",
-  toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
-)
-
-toolchain(
-  name = "cortex_m0f_keil",
-  exec_compatible_with = [
-    "@platforms//cpu:x86_64",
-    "@platforms//os:windows",
-  ],
-  target_compatible_with = [
-    "//platforms/cpu:cortex_m0+",
-    "//platforms/compiler:keil",
-  ],
-  toolchain = "//platforms/compiler/keil:cortex_m0+",
-  toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
-)
-
-
