@@ -11,6 +11,14 @@ cc_binary(
   visibility = ["//visibility:public"],
 )
 
+genrule(
+  name = "app",
+  srcs = [":application"],
+  outs = ["app.hex"],
+  cmd = "objcopy -O ihex $(location :application) $(location :app.hex)" ,
+  visibility = ["//visibility:public"],
+)
+
 # genrule(
 #   name = "file",
 #   srcs = [":app"],
@@ -32,18 +40,18 @@ cc_binary(
 # )
 
 
-flash_tool(
-    name='foo',
-)
+# flash_tool(
+#     name='foo',
+# )
 
-genrule(
-    name='bar',
-    tools=['//tools/flash'],
-    outs=['bar.txt'],
-    cmd="$(location //tools/flash) $@",
-    executable = True
+# genrule(
+#     name='bar',
+#     tools=['//tools/flash'],
+#     outs=['bar.txt'],
+#     cmd="$(location //tools/flash) $@",
+#     executable = True
 
-)
+# )
 
 # load("//foo:bind.bzl", "bind_foo")
 
@@ -59,8 +67,8 @@ genrule(
 #     ],
 # )
 
-sh_binary(
-  name = "run",
-  srcs = ["//tools/Run:st-link-flash"],
-  visibility = ["//visibility:public"],
-)
+# sh_binary(
+#   name = "run",
+#   srcs = ["//tools/Run:st-link-flash"],
+#   visibility = ["//visibility:public"],
+# )
