@@ -65,27 +65,27 @@ cc_library(
 # the CMSIS registeres to interact with peripherals. CMSIS driver templates are
 # also part of the specification, but are incomplete, less maintained, and are
 # simply a layer of indirection that calls these vendor specific functions.
-cc_library(
-    name = "hal",
-    includes = ["Drivers/STM32F4xx_HAL_Driver/Inc"],
-    hdrs =
-        glob(["Drivers/STM32F4xx_HAL_Driver/Inc/**/*.h"]) +
-        [":hal_conf"],
-    srcs = select({
-        ":stm32f407xx": glob(["Drivers/STM32F4xx_HAL_Driver/Src/*.c"]),
-         "//conditions:default": [],
-    }),
-    deps = [":cmsis"],
-    visibility = ["//visibility:public"],
-)
+# cc_library(
+#     name = "hal",
+#     includes = ["Drivers/STM32F4xx_HAL_Driver/Inc"],
+#     hdrs =
+#         glob(["Drivers/STM32F4xx_HAL_Driver/Inc/**/*.h"]) +
+#         [":hal_conf"],
+#     srcs = select({
+#         ":stm32f407xx": glob(["Drivers/STM32F4xx_HAL_Driver/Src/*.c"]),
+#          "//conditions:default": [],
+#     }),
+#     deps = [":cmsis"],
+#     visibility = ["//visibility:public"],
+# )
 
 # Enables all features of the Hardware Abstraction Layer (HAL).
-genrule(
-    name = "hal_conf",
-    srcs = ["Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_conf_template.h"],
-    outs = ["Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_conf.h"],
-    cmd = "cp $< $@",
-)
+# genrule(
+#     name = "hal_conf",
+#     srcs = ["Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_conf_template.h"],
+#     outs = ["Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_conf.h"],
+#     cmd = "cp $< $@",
+# )
 
 TEMPLATES_PATH = "Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates"
 
@@ -115,7 +115,7 @@ cc_library(
             "-DSTM32F407xx",
         ],
         ":stm32f407xx_iar": [
-            "-DSTM32F407xx=",
+            #  "-DSTM32F407xx=",
             # "-D__NO_RETURN=",
             # "-D__STATIC_INLINE=",
             ],
